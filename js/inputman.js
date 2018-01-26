@@ -27,7 +27,7 @@ gamepad.bind(Gamepad.Event.BUTTON_DOWN, function (e) {
             holdLeft = true;
             break;
         case "RIGHT_BOTTOM_SHOULDER":
-            location.reload();
+            //location.reload();
             break;
         case "DPAD_RIGHT":
             holdRight = true;
