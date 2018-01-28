@@ -7,6 +7,7 @@ var gamePaused = false;
 var dropCounter = 0;
 var dropInterval = 1000;
 var lastTime = 0;
+var speedModifier = 1;
 var mode = 0;
 /*
 0: Normal-Mode
@@ -218,10 +219,10 @@ function update(time) {
         time = 0;
     }
     if (mode == 0) {
-        //timer.innerHTML = Math.round(time/100)/10;
         var deltaTime = time - lastTime;
+        //console.log(dropInterval * speedModifier);
         dropCounter += deltaTime;
-        if (dropCounter > dropInterval) {
+        if (dropCounter > (dropInterval * speedModifier)) {
             playerDrop(1);
         }
         lastTime = time;
@@ -232,20 +233,34 @@ function update(time) {
 
 function updateScore() {
     document.getElementById('score').innerText = player.score;
+    if (player.score > 30 && player.score < 60) {
+        speedModifier = 0.9;
+    } else if (player.score > 60 && player.score < 90) {
+        speedModifier = 0.8;
+    } else if (player.score > 90 && player.score < 120) {
+        speedModifier = 0.7;
+    } else if (player.score > 120 && player.score < 150) {
+        speedModifier = 0.6;
+    } else if (player.score > 150 && player.score < 180) {
+        speedModifier = 0.5;
+    } else if (player.score > 180 && player.score < 210) {
+        speedModifier = 0.4;
+    } else if (player.score > 210 && player.score < 240) {
+        speedModifier = 0.3;
+    } else if (player.score > 240 && player.score < 270) {
+        speedModifier = 0.2;
+    } else if (player.score > 270 && player.score < 300) {
+        speedModifier = 0.1;
+    }
+    //console.log(speedModifier + " " + player.score);
 }
 
 function switchMode() {
     if (mode == 0) {
         mode = 1;
-        document.body.style.background = "#DFDFD7";
-        document.getElementById("rightBar").style.color = "RGBA(0, 0, 0, 0.5)";
-        document.getElementById("score").style.color = "RGBA(0, 0, 0, 0.5)";
         document.getElementById('gameMode').innerHTML = "Fill";
     } else {
         mode = 0;
-        document.body.style.background = "#202028";
-        document.getElementById("rightBar").style.color = "RGBA(255, 255, 255, 0.5)";
-        document.getElementById("score").style.color = "RGBA(255, 255, 255, 0.5)";
         document.getElementById('gameMode').innerHTML = "Normal";
     }
 }

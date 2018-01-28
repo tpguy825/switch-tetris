@@ -1,14 +1,13 @@
 //Using http://kallaspriit.github.io/HTML5-JavaScript-Gamepad-Controller-Library/
 
-var inputStepPause = 7;
+//There are about 60 Inputs per second. This sets how much of them to "skip"
+var inputStepPause = 6;   //Moving-Input: Left,Right,Down
 
 var inputStep = 0;
 var gamepad = new Gamepad();
 var holdLeft = false;
 var holdRight = false;
 var holdDown = false;
-var holdL = false;
-var holdR = false;
 
 gamepad.bind(Gamepad.Event.CONNECTED, function (device) {
     dbt.innerHTML = "Gamepad Detected";
@@ -36,10 +35,10 @@ gamepad.bind(Gamepad.Event.BUTTON_DOWN, function (e) {
             holdDown = true;
             break;
         case "LEFT_TOP_SHOULDER":
-            holdL = true;
+            move("z", 0);
             break;
         case "RIGHT_TOP_SHOULDER":
-            holdR = true;
+            move("z", 1);
             break;
         case "START_FORWARD":
             togglePause();
@@ -65,12 +64,6 @@ gamepad.bind(Gamepad.Event.BUTTON_UP, function (e) {
         case "DPAD_DOWN":
             holdDown = false;
             break;
-        case "LEFT_TOP_SHOULDER":
-            holdL = false;
-            break;
-        case "RIGHT_TOP_SHOULDER":
-            holdR = false;
-            break;
     }
 
 });
@@ -85,12 +78,6 @@ gamepad.bind(Gamepad.Event.TICK, function (gamepads) {
         }
         if (holdDown) {
             move("y", 1);
-        }
-        if (holdL) {
-            move("z", 0);
-        }
-        if (holdR) {
-            move("z", 1);
         }
         inputStep = 0;
     } else {
