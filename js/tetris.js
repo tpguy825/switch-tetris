@@ -186,6 +186,7 @@ function playerMove(offset) {
 
 function playerReset() {
     var pieces = 'TJLOSZI';
+    speedModifier = 1;
     player.matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
     player.pos.y = 0;
     player.pos.x = (arena[0].length / 2 | 0) -
@@ -258,9 +259,11 @@ function updateScore() {
 function switchMode() {
     if (mode == 0) {
         mode = 1;
+        playerReset();
         document.getElementById('gameMode').innerHTML = "Fill";
     } else {
         mode = 0;
+        playerReset();
         document.getElementById('gameMode').innerHTML = "Normal";
     }
 }
