@@ -1,24 +1,23 @@
 //Using http://kallaspriit.github.io/HTML5-JavaScript-Gamepad-Controller-Library/
-
+import { dbt, move, playerReset, running, setRunning, switchMode, togglePause, update, updateScore, } from "./tetris.js";
+import { Gamepad } from "./gamepad.js";
 //There are about 60 Inputs per second. This sets how much of them to "skip"
-var inputStepPause = 6;   //Moving-Input: Left,Right,Down
-
+var inputStepPause = 6; //Moving-Input: Left,Right,Down
 var inputStep = 0;
 var gamepad = new Gamepad();
 var holdLeft = false;
 var holdRight = false;
 var holdDown = false;
-
-gamepad.bind(Gamepad.Event.CONNECTED, function (device) {
+var holdUp = false;
+gamepad.bind(Gamepad.Event.CONNECTED, function () {
     dbt.innerHTML = "Gamepad Detected";
     if (!running) {
         playerReset();
         updateScore();
         update();
-        running = true;
+        setRunning(true);
     }
 });
-
 gamepad.bind(Gamepad.Event.BUTTON_DOWN, function (e) {
     dbt.innerHTML = "" + e.control;
     switch (e.control) {
@@ -33,6 +32,9 @@ gamepad.bind(Gamepad.Event.BUTTON_DOWN, function (e) {
             break;
         case "DPAD_DOWN":
             holdDown = true;
+            break;
+        case "DPAD_UP":
+            holdUp = true;
             break;
         case "LEFT_TOP_SHOULDER":
             move("z", 0);
@@ -50,9 +52,7 @@ gamepad.bind(Gamepad.Event.BUTTON_DOWN, function (e) {
             switchMode();
             break;
     }
-
 });
-
 gamepad.bind(Gamepad.Event.BUTTON_UP, function (e) {
     switch (e.control) {
         case "DPAD_LEFT":
@@ -64,10 +64,11 @@ gamepad.bind(Gamepad.Event.BUTTON_UP, function (e) {
         case "DPAD_DOWN":
             holdDown = false;
             break;
+        case "DPAD_UP":
+            holdUp = false;
+            break;
     }
-
 });
-
 gamepad.bind(Gamepad.Event.TICK, function (gamepads) {
     if (inputStep >= inputStepPause) {
         if (holdLeft) {
@@ -79,12 +80,15 @@ gamepad.bind(Gamepad.Event.TICK, function (gamepads) {
         if (holdDown) {
             move("y", 1);
         }
+        if (holdUp) {
+            move("y", -2);
+        }
         inputStep = 0;
-    } else {
+    }
+    else {
         inputStep++;
     }
 });
-
 gamepad.bind(Gamepad.Event.AXIS_CHANGED, function (e) {
     dbt.innerHTML = "" + e.value + " | " + e.axis;
     switch (e.axis) {
@@ -92,10 +96,12 @@ gamepad.bind(Gamepad.Event.AXIS_CHANGED, function (e) {
             if (e.value < -0.5) {
                 holdLeft = true;
                 holdRight = false;
-            } else if (e.value > 0.5) {
+            }
+            else if (e.value > 0.5) {
                 holdRight = true;
                 holdLeft = false;
-            } else if (e.value < 0.5 || e.value > -0.5) {
+            }
+            else if (e.value < 0.5 || e.value > -0.5) {
                 holdLeft = false;
                 holdRight = false;
             }
@@ -103,13 +109,13 @@ gamepad.bind(Gamepad.Event.AXIS_CHANGED, function (e) {
         case "LEFT_STICK_Y":
             if (e.value > 0.5) {
                 holdDown = true;
-            } else if (e.value < 0.5) {
+            }
+            else if (e.value < 0.5) {
                 holdDown = false;
             }
             break;
     }
 });
-
 if (!gamepad.init()) {
-    dbt.innerHTML = "ERROR";
+    dbt.innerHTML = "Unsupported platform";
 }
