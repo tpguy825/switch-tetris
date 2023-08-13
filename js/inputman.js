@@ -1,6 +1,5 @@
 //Using http://kallaspriit.github.io/HTML5-JavaScript-Gamepad-Controller-Library/
 import { dbt, move, playerReset, running, setRunning, switchMode, togglePause, update, updateScore, } from "./tetris.js";
-import { Gamepad } from "./gamepad.js";
 //There are about 60 Inputs per second. This sets how much of them to "skip"
 var inputStepPause = 6; //Moving-Input: Left,Right,Down
 var inputStep = 0;
@@ -9,7 +8,7 @@ var holdLeft = false;
 var holdRight = false;
 var holdDown = false;
 var holdUp = false;
-gamepad.bind(Gamepad.Event.CONNECTED, function () {
+gamepad.bind("connected", function () {
     dbt.innerHTML = "Gamepad Detected";
     if (!running) {
         playerReset();
@@ -18,7 +17,7 @@ gamepad.bind(Gamepad.Event.CONNECTED, function () {
         setRunning(true);
     }
 });
-gamepad.bind(Gamepad.Event.BUTTON_DOWN, function (e) {
+gamepad.bind("button-down", function (e) {
     dbt.innerHTML = "" + e.control;
     switch (e.control) {
         case "DPAD_LEFT":
@@ -53,7 +52,7 @@ gamepad.bind(Gamepad.Event.BUTTON_DOWN, function (e) {
             break;
     }
 });
-gamepad.bind(Gamepad.Event.BUTTON_UP, function (e) {
+gamepad.bind("button-up", function (e) {
     switch (e.control) {
         case "DPAD_LEFT":
             holdLeft = false;
@@ -69,7 +68,7 @@ gamepad.bind(Gamepad.Event.BUTTON_UP, function (e) {
             break;
     }
 });
-gamepad.bind(Gamepad.Event.TICK, function (gamepads) {
+gamepad.bind("tick", function () {
     if (inputStep >= inputStepPause) {
         if (holdLeft) {
             move("x", -1);
@@ -89,7 +88,7 @@ gamepad.bind(Gamepad.Event.TICK, function (gamepads) {
         inputStep++;
     }
 });
-gamepad.bind(Gamepad.Event.AXIS_CHANGED, function (e) {
+gamepad.bind("axis-changed", function (e) {
     dbt.innerHTML = "" + e.value + " | " + e.axis;
     switch (e.axis) {
         case "LEFT_STICK_X":

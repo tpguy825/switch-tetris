@@ -11,19 +11,28 @@ import {
 	update,
 	updateScore,
 } from "./tetris.js";
-import { Gamepad } from "./gamepad.js";
+
+type Gamepad = {
+	init: () => boolean;
+	bind: {
+		(event: "tick" | "connected" | "disconnected", callback: () => void): void;
+		(event: "button-down" | "button-up", callback: (e: { control: string }) => void): void;
+		(event: "axis-changed", callback: (e: { axis: string; value: number }) => void): void;
+	};
+	Event: {};
+};
 
 //There are about 60 Inputs per second. This sets how much of them to "skip"
 var inputStepPause = 6; //Moving-Input: Left,Right,Down
 
 var inputStep = 0;
-var gamepad = new Gamepad();
+var gamepad = new Gamepad() as any as Gamepad;
 var holdLeft = false;
 var holdRight = false;
 var holdDown = false;
 var holdUp = false;
 
-gamepad.bind(Gamepad.Event.CONNECTED, function () {
+gamepad.bind("connected", function () {
 	dbt.innerHTML = "Gamepad Detected";
 	if (!running) {
 		playerReset();
@@ -33,7 +42,7 @@ gamepad.bind(Gamepad.Event.CONNECTED, function () {
 	}
 });
 
-gamepad.bind(Gamepad.Event.BUTTON_DOWN, function (e) {
+gamepad.bind("button-down", function (e) {
 	dbt.innerHTML = "" + e.control;
 	switch (e.control) {
 		case "DPAD_LEFT":
@@ -69,7 +78,7 @@ gamepad.bind(Gamepad.Event.BUTTON_DOWN, function (e) {
 	}
 });
 
-gamepad.bind(Gamepad.Event.BUTTON_UP, function (e) {
+gamepad.bind("button-up", function (e) {
 	switch (e.control) {
 		case "DPAD_LEFT":
 			holdLeft = false;
@@ -86,7 +95,7 @@ gamepad.bind(Gamepad.Event.BUTTON_UP, function (e) {
 	}
 });
 
-gamepad.bind(Gamepad.Event.TICK, function (gamepads) {
+gamepad.bind("tick", function () {
 	if (inputStep >= inputStepPause) {
 		if (holdLeft) {
 			move("x", -1);
@@ -106,7 +115,7 @@ gamepad.bind(Gamepad.Event.TICK, function (gamepads) {
 	}
 });
 
-gamepad.bind(Gamepad.Event.AXIS_CHANGED, function (e) {
+gamepad.bind("axis-changed", function (e) {
 	dbt.innerHTML = "" + e.value + " | " + e.axis;
 	switch (e.axis) {
 		case "LEFT_STICK_X":

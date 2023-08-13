@@ -1165,3 +1165,4 @@
 
 	exports.Gamepad = Gamepad;
 })((typeof module !== "undefined" && module.exports) || window);
+
